@@ -246,7 +246,7 @@ $mapping = @{
 "NULL"="SSL_CK_NULL"	
 }
 
-.\sslscan.exe" --xml=output.xml $DomainName
+.\sslscan.exe --xml=output.xml $DomainName
 [xml]$report = Get-Content output.xml
 $ciphers = $report.document.ssltest.cipher | % {$_.cipher.ToString()}
 $converted = $report.document.ssltest.cipher | % {$mapping[$_.cipher.ToString()]}
