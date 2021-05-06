@@ -1,6 +1,9 @@
 # sslscan from https://github.com/rbsec/sslscan
 
-param ($DomainName)
+param (
+	$DomainName,
+	[switch]$SkipSslScan = $false
+)
 
 # From https://testssl.sh/openssl-iana.mapping.html
 $mapping = @{
@@ -246,7 +249,9 @@ $mapping = @{
 "NULL"="SSL_CK_NULL"	
 }
 
-.\sslscan.exe --xml=output.xml $DomainName
+if (-not $SkipSslScan) {
+	.\sslscan.exe --xml=output.xml $DomainName
+}
 [xml]$report = Get-Content output.xml
 $ciphers = $report.document.ssltest.cipher | % {$_.cipher.ToString()}
 $converted = $report.document.ssltest.cipher | % {$mapping[$_.cipher.ToString()]}
