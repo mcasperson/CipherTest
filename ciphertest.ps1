@@ -5,6 +5,42 @@ param (
 	[switch]$SkipSslScan = $false
 )
 
+# https://docs.microsoft.com/en-au/windows/win32/secauthn/tls-cipher-suites-in-windows-10-v1607
+$windows2016Ciphers = @(
+"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+"TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+"TLS_DHE_RSA_WITH_AES_256_GCM_SHA384",
+"TLS_DHE_RSA_WITH_AES_128_GCM_SHA256",
+"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+"TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+"TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+"TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+"TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+"TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
+"TLS_DHE_RSA_WITH_AES_128_CBC_SHA",
+"TLS_RSA_WITH_AES_256_GCM_SHA384",
+"TLS_RSA_WITH_AES_128_GCM_SHA256",
+"TLS_RSA_WITH_AES_256_CBC_SHA256",
+"TLS_RSA_WITH_AES_128_CBC_SHA256",
+"TLS_RSA_WITH_AES_256_CBC_SHA",
+"TLS_RSA_WITH_AES_128_CBC_SHA",
+"TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+"TLS_DHE_DSS_WITH_AES_256_CBC_SHA256",
+"TLS_DHE_DSS_WITH_AES_128_CBC_SHA256",
+"TLS_DHE_DSS_WITH_AES_256_CBC_SHA",
+"TLS_DHE_DSS_WITH_AES_128_CBC_SHA",
+"TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA",
+"TLS_RSA_WITH_RC4_128_SHA",
+"TLS_RSA_WITH_RC4_128_MD5",
+"TLS_RSA_WITH_NULL_SHA256",
+"TLS_RSA_WITH_NULL_SHA"
+)
+
 #https://docs.microsoft.com/en-au/windows/win32/secauthn/tls-cipher-suites-in-windows-8
 $windows2008R2Ciphers = @(
 "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P256",
@@ -351,6 +387,11 @@ $common = Get-TlsCipherSuite | % {$_.Name} | ? {$ciphers.Contains($_) -or $conve
 
 write-host
 write-host "Supported by website and this copy of Windows: $common"
+
+$win2016 = $windows2016Ciphers | ? {$ciphers.Contains($_) -or $converted.Contains($_)}
+
+Write-Host
+Write-Host "Supported by Windows 2016: $win2016"
 
 $win2012r2 = $windows2012r2Ciphers | ? {$ciphers.Contains($_) -or $converted.Contains($_)}
 
